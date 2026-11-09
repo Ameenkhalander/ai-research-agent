@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-research-agent"
+version = "1.0.0"
+description = "AI research assistant: Claude agent + custom MCP server + RAG + automated evaluation"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "anthropic>=0.40.0",
+    "mcp>=1.9.0,<2",
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.29.0",
+    "python-multipart>=0.0.9",
+    "pydantic>=2.6.0",
+    "httpx>=0.27.0",
+    "streamlit>=1.36.0",
+    "chromadb>=0.5.5",
+    "pandas>=2.1.0",
+    "pypdf>=4.2.0",
+    "reportlab>=4.1.0",
+    "ddgs>=9.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.scripts]
+research-agent-mcp = "research_agent.mcp_server.server:main"
+research-agent-benchmark = "research_agent.evals.benchmark:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

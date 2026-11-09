@@ -1,0 +1,34 @@
+Model Context Protocol (MCP) - Study Notes
+
+The Model Context Protocol is an open protocol, introduced by Anthropic in November 2024, that standardises how
+AI applications connect to external tools and data sources. Instead of writing a custom integration for every
+combination of model and tool, a developer writes one MCP server and any MCP-compatible client can use it.
+
+Architecture
+MCP follows a client-server design built on JSON-RPC 2.0 messages. A host application (for example a chat
+application or an IDE) creates one MCP client per server it connects to. Each client keeps a dedicated,
+stateful session with its server. The session starts with an initialize handshake in which both sides declare
+their protocol version and capabilities.
+
+Server primitives
+An MCP server can expose three kinds of primitives. Tools are executable functions that the language model decides
+to call, such as a web search or a calculator; they are model-controlled. Resources are read-only data such as files,
+database rows or API responses that the host application attaches to the context; they are application-controlled.
+Prompts are reusable, parameterised message templates that a user selects explicitly, for example from a slash-command
+menu; they are user-controlled.
+
+Discovery and invocation
+A client discovers the available tools with the tools/list request. Each tool is described by a name, a human-readable
+description and a JSON Schema for its input arguments. The model sees these descriptions and decides when to call a tool.
+The client then sends a tools/call request with the chosen arguments and receives a result made of content blocks,
+along with an isError flag when the tool failed.
+
+Transports
+Two standard transports are defined. With stdio, the client launches the server as a subprocess and exchanges messages
+over standard input and output; this is ideal for local tools, and it means the server must never write logs to stdout.
+With Streamable HTTP, the server runs as an independent web service and clients send requests over HTTP, optionally
+receiving streamed responses; this suits remote and multi-client deployments and replaced the older HTTP plus SSE transport.
+
+Security considerations
+Because tools can have side effects, hosts should obtain user consent before invoking sensitive tools, validate tool
+inputs, restrict file and network access, and treat tool output as untrusted data that may contain prompt injection.

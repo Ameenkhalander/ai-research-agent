@@ -1,0 +1,31 @@
+Evaluating LLM Applications - Practical Guide
+
+Why evaluate
+Language model outputs are fluent even when they are wrong, so applications need systematic evaluation rather than
+spot checks. A good evaluation suite is a regression test for prompts, models and retrieval settings: every change is
+scored on the same dataset before it ships.
+
+Core metrics for research and RAG systems
+Answer relevance asks whether the response actually addresses the question that was asked. Faithfulness, also called
+groundedness or factual consistency, asks whether every claim is supported by the retrieved evidence, regardless of
+whether the claim happens to be true in general. Completeness asks whether all aspects of the question are covered.
+Citation validity checks that each citation points to a real source that supports the sentence it is attached to.
+Hallucination indicators include numbers, names or URLs that appear in the answer but nowhere in the evidence.
+For retrieval, context precision measures how much of the retrieved material is relevant and context recall measures
+whether the needed information was retrieved at all.
+
+Reference-based versus reference-free evaluation
+Reference-based metrics compare the answer with a gold answer and work well for closed questions. Open-ended research
+questions rarely have a single gold answer, so reference-free methods are used: programmatic checks, such as verifying
+that citation identifiers resolve, and model-based judging.
+
+LLM-as-judge
+A strong model scores the output against a rubric. It scales cheaply but has known weaknesses. Position bias makes the
+judge prefer the answer shown first in pairwise comparisons. Verbosity bias favours longer answers. Self-preference bias
+makes a model rate text from its own family more highly. Judges can also be inconsistent between runs. Mitigations include
+precise rubrics with anchored score levels, structured outputs, randomising answer order, using several judges, and
+calibrating judge scores against a small set of human labels.
+
+Recommendations
+Combine cheap deterministic checks with an LLM judge, keep a versioned dataset of representative questions, track scores
+over time, and treat automated scores as indicators that guide human review rather than as proof of correctness.

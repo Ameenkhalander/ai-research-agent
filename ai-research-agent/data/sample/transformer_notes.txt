@@ -1,0 +1,29 @@
+Transformer Architecture - Notes
+
+The transformer, introduced in the 2017 paper "Attention Is All You Need", replaced recurrence with attention so that all
+positions in a sequence can be processed in parallel during training.
+
+Self-attention
+Each input token embedding is projected into three vectors: a query, a key and a value. The query of one token is compared
+with the keys of all tokens using a dot product, producing relevance scores. The scores are divided by the square root of
+the key dimension, passed through a softmax to become weights that sum to one, and used to take a weighted sum of the value
+vectors. In matrix form the operation is softmax(Q K^T / sqrt(d_k)) V. Scaling by sqrt(d_k) keeps the dot products from
+growing with the dimension, which would push the softmax into regions with tiny gradients.
+
+Multi-head attention
+Instead of a single attention function, the model runs several attention heads in parallel, each with its own learned
+projections. The head outputs are concatenated and projected again. Different heads can specialise in different relations,
+such as syntax or long-range references.
+
+Positional information
+Attention itself is order-agnostic, so positional information is added. The original model used sinusoidal positional
+encodings; many modern models use learned embeddings or rotary position embeddings applied to queries and keys.
+
+Encoder and decoder
+The original architecture has an encoder stack and a decoder stack. Decoder-only models, which generate text left to right,
+use a causal mask so a token can only attend to earlier positions. Each layer also contains a position-wise feed-forward
+network, residual connections and layer normalisation.
+
+Costs and inference
+Self-attention compares every token with every other token, so compute and memory grow quadratically with sequence length.
+During generation, a key-value cache stores the keys and values of previous tokens so they are not recomputed at each step.

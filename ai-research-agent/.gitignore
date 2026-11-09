@@ -1,0 +1,26 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# App data (SQLite + ChromaDB) and benchmark output
+storage/
+evals/results/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
